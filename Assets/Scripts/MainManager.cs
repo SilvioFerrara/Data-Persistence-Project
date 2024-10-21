@@ -12,6 +12,7 @@ public class MainManager : MonoBehaviour
 
     public Text ScoreText;
     public GameObject GameOverText;
+    public Text  BestUserText;
     
     private bool m_Started = false;
     private int m_Points;
@@ -35,6 +36,12 @@ public class MainManager : MonoBehaviour
                 brick.PointValue = pointCountArray[i];
                 brick.onDestroyed.AddListener(AddPoint);
             }
+        }
+
+        if (MenuManager.Instance != null)
+        {
+            MenuManager.Instance.LoadScore();
+            BestUserText.text = $"Best Score : {MenuManager.Instance.BestUserName} : {MenuManager.Instance.BestScore}";
         }
     }
 
@@ -67,10 +74,33 @@ public class MainManager : MonoBehaviour
         m_Points += point;
         ScoreText.text = $"Score : {m_Points}";
     }
+    /*
+        public void GameOver()
+        {
+            m_GameOver = true;
+            GameOverText.SetActive(true);
 
+            if (MenuManager.Instance != null && m_Points > MenuManager.Instance.BestScore)
+            {
+                //MenuManager.Instance.LoadLastUser();
+                MenuManager.Instance.SaveScore(MenuManager.Instance.LastUserName, m_Points);
+
+                MenuManager.Instance.LoadScore();
+                BestUserText.text = $"Best Score : {MenuManager.Instance.BestUserName} : {MenuManager.Instance.BestScore}";
+            }
+        }*/
     public void GameOver()
     {
         m_GameOver = true;
         GameOverText.SetActive(true);
+
+        if (MenuManager.Instance != null && m_Points > MenuManager.Instance.BestScore)
+        {
+            MenuManager.Instance.SaveScore(MenuManager.Instance.LastUserName, m_Points);
+
+            // Aggiorna il testo del miglior punteggio senza dover ricaricare i dati
+            BestUserText.text = $" NEW Best Score : {MenuManager.Instance.LastUserName} : {m_Points}";
+        }
     }
+
 }
